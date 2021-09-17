@@ -1,0 +1,52 @@
+{
+	"scripts": {
+		"test": "run-s lint:* build",
+		"build": "webpack --mode=production",
+		"watch": "webpack --mode=development --watch",
+		"version": "dot-json distribution/manifest.json version $VER",
+		"release:cws": "webstore upload --source=distribution --auto-publish",
+		"release:amo": "web-ext-submit --source-dir distribution",
+		"release": "VER=$(daily-version) run-s build version release:*"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.15.5",
+		"@babel/preset-env": "^7.15.6",
+		"@babel/preset-react": "^7.14.5",
+		"@babel/preset-typescript": "^7.15.0",
+		"@types/firefox-webext-browser": "^82.0.1",
+		"@types/react-dom": "^17.0.9",
+		"babel-loader": "^8.2.2",
+		"babel-plugin-styled-components": "^1.13.2",
+		"chrome-webstore-upload-cli": "^1.2.2",
+		"copy-webpack-plugin": "^9.0.1",
+		"daily-version": "^2.0.0",
+		"dot-json": "^1.2.2",
+		"eslint": "^7.32.0",
+		"eslint-config-xo": "^0.38.0",
+		"npm-run-all": "^4.1.5",
+		"size-plugin": "^3.0.0",
+		"stylelint": "^13.13.1",
+		"stylelint-config-xo": "^0.20.0",
+		"terser-webpack-plugin": "^5.2.4",
+		"ts-loader": "^9.2.5",
+		"typescript": "^4.4.3",
+		"web-ext": "^6.4.0",
+		"web-ext-submit": "^6.4.0",
+		"webpack": "^5.53.0",
+		"webpack-cli": "^4.8.0",
+		"xo": "^0.44.0"
+	},
+	"dependencies": {
+		"@types/react": "^17.0.21",
+		"@types/styled-components": "^5.1.14",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"styled-components": "^5.3.1",
+		"styled-normalize": "^8.0.7",
+		"webext-options-sync": "^2.0.1",
+		"webextension-polyfill": "^0.8.0"
+	},
+	"stylelint": {
+		"extends": "stylelint-config-xo"
+	}
+}
