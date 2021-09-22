@@ -1,22 +1,13 @@
 import React, { FC, useEffect } from 'react'
 import browser from 'webextension-polyfill'
+import useAppState from './useAppState'
 
 const App: FC = () => {
-    useEffect(() => {
-        browser.runtime.sendMessage({
-            data: 'popup mounted'
-        })
-
-        return () => {
-            console.log('cleanup')
-            browser.runtime.sendMessage({
-                data: 'popup unmounted'
-            })
-        }
-    }, [])
+    const { documentUrl } = useAppState()
 
     return (
         <div>
+            <div>{documentUrl}</div>
             Hello world!
         </div>
     )
