@@ -15,9 +15,21 @@ const logURL = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType): 
     // console.log(requestData)
 }
 
-browser.runtime.onMessage.addListener((message, sender) => {
+browser.runtime.onMessage.addListener((message: Action, sender) => {
     // only listen to own messages
     if (sender.id !== browser.runtime.id) return
+
+    if (!message) return
+
+    switch (message.type) {
+        case 'sync': {
+            browser.runtime.sendMessage(undefined, {
+                documentUrl: 'testdomain.com'
+            })
+            break
+        }
+        default: console.warn('Unknown action', message)
+    }
 
     console.log(message, sender)
 })
