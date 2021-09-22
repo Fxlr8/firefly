@@ -2,14 +2,8 @@ interface SyncAction {
     type: 'sync'
 }
 
-interface AllowListAddAction {
-    type: 'allowListAdd',
-    payload: string
+interface AllowListChangeAction {
+    type: 'allowListChange',
 }
 
-interface AllowListRemoveAction {
-    type: 'allowListRemove',
-    payload: string
-}
-
-type Action = SyncAction | AllowListAddAction | AllowListRemoveAction
+type Action = SyncAction | AllowListChangeAction
