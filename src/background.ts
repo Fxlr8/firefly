@@ -16,15 +16,7 @@ const logURL = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType): 
 }
 
 const sendState = async () => {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-    const tab = tabs[0]
-    if (tab && tab.url) {
-        const { domain } = parse(tab.url)
-        console.log(tab.url, domain)
-        browser.runtime.sendMessage({
-            documentUrl: domain
-        })
-    }
+
 }
 
 browser.runtime.onMessage.addListener((message: Action, sender) => {
