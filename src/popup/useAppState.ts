@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { parse } from 'tldts'
 import browser from 'webextension-polyfill'
 
@@ -8,10 +8,9 @@ interface AppState {
     allowList: string[]
 }
 
-const useAppState = (): AppState => {
+const useAppState = () => {
     const [domain, setDomain] = useState<string>()
     const [blockedTrackers, setBlockedTrackers] = useState<number>(0)
-    const [allowList, setAllowList] = useState<string[]>([])
 
     useEffect(() => {
         browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
@@ -27,6 +26,8 @@ const useAppState = (): AppState => {
         })
     }, [])
 
+
+
     useEffect(() => {
         const listener = (message: AppState, sender: browser.Runtime.MessageSender) => {
             console.log('popup new message', message)
@@ -34,10 +35,6 @@ const useAppState = (): AppState => {
 
             if ('blockedTrackers' in message) {
                 setBlockedTrackers(message.blockedTrackers!)
-            }
-
-            if (message.allowList) {
-                setAllowList(message.allowList)
             }
         }
         browser.runtime.onMessage.addListener(listener)
@@ -54,8 +51,7 @@ const useAppState = (): AppState => {
 
     return {
         domain,
-        blockedTrackers,
-        allowList
+        blockedTrackers
     }
 }
 
