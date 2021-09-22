@@ -15,20 +15,32 @@ const logURL = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType): 
     // console.log(requestData)
 }
 
+const sendState = async () => {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+    const tab = tabs[0]
+    if (tab && tab.url) {
+        const { domain } = parse(tab.url)
+        console.log(tab.url, domain)
+        browser.runtime.sendMessage({
+            documentUrl: domain
+        })
+    }
+}
+
 browser.runtime.onMessage.addListener((message: Action, sender) => {
     // only listen to own messages
     if (sender.id !== browser.runtime.id) return
 
     if (!message) return
 
+    console.log(sender?.tab?.url)
+
     switch (message.type) {
         case 'sync': {
-            browser.runtime.sendMessage(undefined, {
-                documentUrl: 'testdomain.com'
-            })
-            break
+            return sendState()
         }
         default: console.warn('Unknown action', message)
+
     }
 
     console.log(message, sender)
