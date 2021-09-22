@@ -1,14 +1,16 @@
 import React, { FC, useEffect } from 'react'
 import browser from 'webextension-polyfill'
 import useAppState from './useAppState'
+import Switch from './Switch'
 
 const App: FC = () => {
-    const { documentUrl } = useAppState()
+    const { domain } = useAppState()
 
     return (
         <div>
-            <div>{documentUrl}</div>
+            <div>{domain}</div>
             Hello world!
+            <Switch active={true} onClick={() => console.log('click')} />
         </div>
     )
 }
