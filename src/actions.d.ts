@@ -1,9 +1,16 @@
-interface SyncAction {
-    type: 'sync'
+interface SyncTrackerCountAction {
+    type: 'syncTrackerCount'
+    tabId: number
 }
 
 interface AllowListChangeAction {
     type: 'allowListChange',
 }
 
-type Action = SyncAction | AllowListChangeAction
+interface TrackerCountUpdateAction {
+    type: 'trackerCountUpdate',
+    tabId: number,
+    value: number
+}
+
+type Action = SyncTrackerCountAction | AllowListChangeAction | TrackerCountUpdateAction
