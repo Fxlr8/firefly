@@ -52,11 +52,13 @@ const ContainerBottom = styled.div`
     align-items: center;
 `
 
-const ContainerBottomLeft = styled.div`
+const ContainerBottomLeft = styled.div<{ hide: boolean }>`
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    opacity: ${props => props.hide ? 0 : 1};
+    transition: opacity 300ms ease;
 `
 
 const ContainerBottomRight = styled.div`
@@ -118,12 +120,12 @@ const EyesOne = styled(Eyes)`
 `
 const EyesTwo = styled(Eyes)`
     top: 270px;
-    left: 45px;
+    left: 260px;
     z-index: 0;
 `
 const EyesThree = styled(Eyes)`
     top: 340px;
-    left: 260px;
+    left: 45px;
     z-index: 0;
 `
 
@@ -172,9 +174,9 @@ const App: FC = () => {
                         <ContainerBottom>
                             {hostname ?
                                 <>
-                                    <ContainerBottomLeft>
+                                    <ContainerBottomLeft hide={!enabled && trackerCount === 0}>
                                         <Counter>{trackerCount}</Counter>
-                                        <CounterText>trackers {enabled ? 'were' : 'are'} following you</CounterText>
+                                        <CounterText>trackers {!enabled ? 'are' : 'were'} following you</CounterText>
                                     </ContainerBottomLeft>
                                     <ContainerBottomRight>
                                         <div>Protection</div>
