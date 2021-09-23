@@ -11,23 +11,22 @@ export const GlobalStyle = createGlobalStyle`
  
   body {
     padding: 0;
-    background-color: black;
+    background-color: #2C2C2C;
     color: white;
     font-family: Sans-Serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-    width: 300px;
-    height: 400px;
+    width: 380px;
+    height: 576px;
+
+    font-size: 15px;
   }
 `
 
 const Root = () => (
-    <>
-        <GlobalStyle />
-        <App />
-    </>
+  <>
+    <GlobalStyle />
+    <App />
+  </>
 )
 
 var mountNode = document.getElementById("popup")
