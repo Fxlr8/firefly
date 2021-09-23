@@ -52,3 +52,8 @@ interface Owner {
     privacyPolicy: string;
     url: string;
 }
+
+interface Site {
+    hostname: string | null,
+    trackers: Set<string>
+}

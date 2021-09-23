@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import tabs from './bg/tabs'
+import tabs, { sendTrackerCountUpdateAction } from './bg/tabs'
 import trackers, { checkTracker } from './bg/trackers'
 import { parse } from 'tldts'
 
@@ -25,9 +25,9 @@ const handleRequest = (requestDetails: browser.WebRequest.OnBeforeRequestDetails
         requestId
     } = requestDetails
 
-    console.log(`request handler for r:${requestId}`)
+    // console.log(`request handler for r:${requestId}`)
 
-    if (!tabId) return
+    if (!tabId || tabId < 0) return
 
     const tab = tabs.get(tabId)
 
@@ -36,7 +36,7 @@ const handleRequest = (requestDetails: browser.WebRequest.OnBeforeRequestDetails
         return
     }
 
-    console.log(`Received ${type} request from tab:${tabId}:${tab.hostname}`)
+    // console.log(`Received ${type} request from tab:${tabId}:${tab.hostname}`)
 
     if (!tab.hostname) {
         return
@@ -49,13 +49,14 @@ const handleRequest = (requestDetails: browser.WebRequest.OnBeforeRequestDetails
         allowList
     })
 
-    console.log(url, result)
+    // console.log(url, result)
 
     if (result.isTracker) {
         const trackerHostname = parse(url).hostname
         if (trackerHostname) {
             tab.trackers.add(trackerHostname!)
-            console.log(tab)
+            // notify popup window on site's tracker count change
+            sendTrackerCountUpdateAction(tabId, tab)
         }
     }
 
@@ -64,27 +65,19 @@ const handleRequest = (requestDetails: browser.WebRequest.OnBeforeRequestDetails
             cancel: true
         }
     }
-    // console.log(requestDetails)
-
-    // const requestData = {
-    //     url: requestDetails.url,
-    //     third: requestDetails.thirdParty,
-    //     tld: parse(requestDetails.url),
-    //     tabId: requestDetails.tabId,
-    //     firstParty: requestDetails.documentUrl,
-    //     type: requestDetails.type,
-    // }
-    // console.log(requestData)
 }
 
-const sendState = async () => {
-
+const getCurrentTab = async (): Promise<browser.Tabs.Tab | void> => {
+    const foundTabs = await browser.tabs.query({ active: true, currentWindow: true })
+    if (foundTabs.length && foundTabs[0].id) {
+        return foundTabs[0]
+    }
 }
 
 const reloadTab = async () => {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true })
-    if (tabs.length) {
-        browser.tabs.reload(tabs[0].id)
+    const tab = await getCurrentTab()
+    if (tab && tab.id) {
+        browser.tabs.reload(tab.id)
     }
 }
 
@@ -97,8 +90,9 @@ browser.runtime.onMessage.addListener((message: Action, sender) => {
     console.log(message, sender)
 
     switch (message.type) {
-        case 'sync': {
-            return sendState()
+        case 'syncTrackerCount': {
+            // responding with tracker count to popup request
+            return sendTrackerCountUpdateAction(message.tabId)
         }
         case 'allowListChange': {
             console.log('Allow list changed')
