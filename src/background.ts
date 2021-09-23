@@ -1,5 +1,10 @@
 import browser from 'webextension-polyfill'
+import tabs from './bg/tabs'
+import trackers, { checkTracker } from './bg/trackers'
 import { parse } from 'tldts'
+
+
+// TODO: add do not track header
 
 const allowList: Set<string> = new Set()
 const updateAllowList = async () => {
@@ -12,7 +17,55 @@ const updateAllowList = async () => {
     }
 }
 
-const logURL = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType): void => {
+const handleRequest = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType) => {
+    const {
+        url,
+        tabId,
+        type,
+        requestId
+    } = requestDetails
+
+    console.log(`request handler for r:${requestId}`)
+
+    if (!tabId) return
+
+    const tab = tabs.get(tabId)
+
+    if (!tab) {
+        console.warn('Received request to an untracked tab', requestDetails)
+        return
+    }
+
+    console.log(`Received ${type} request from tab:${tabId}:${tab.hostname}`)
+
+    if (!tab.hostname) {
+        return
+    }
+
+    const result = checkTracker({
+        hostname: tab.hostname,
+        requestUrl: url,
+        blockList: trackers,
+        allowList
+    })
+
+    console.log(url, result)
+
+    if (result.isTracker) {
+        const trackerHostname = parse(url).hostname
+        if (trackerHostname) {
+            tab.trackers.add(trackerHostname!)
+            console.log(tab)
+        }
+    }
+
+    if (result.block) {
+        return {
+            cancel: true
+        }
+    }
+    // console.log(requestDetails)
+
     // const requestData = {
     //     url: requestDetails.url,
     //     third: requestDetails.thirdParty,
@@ -57,12 +110,10 @@ browser.runtime.onMessage.addListener((message: Action, sender) => {
     console.log(tabs)
 })
 
-    console.log(message, sender)
-})
-
 browser.webRequest.onBeforeRequest.addListener(
-    logURL,
-    { urls: ["<all_urls>"] }
+    handleRequest,
+    { urls: ["<all_urls>"] },
+    ['blocking']
 );
 
 
