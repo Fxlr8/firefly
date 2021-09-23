@@ -124,7 +124,7 @@ const generateBlocklist = async () => {
     compareToDDGList(trackers, 'https://staticcdn.duckduckgo.com/trackerblocking/v2.1/tds.json')
     compareToDDGList(trackers, 'https://staticcdn.duckduckgo.com/trackerblocking/lm/tds.json')
 
-    await fs.writeFile('public/trackers.json', JSON.stringify([...trackers.values()]))
+    await fs.writeFile('generated/trackers.json', JSON.stringify([...trackers.values()]))
 }
 
 const compareToDDGList = async (myList: Set<string>, list: string) => {
