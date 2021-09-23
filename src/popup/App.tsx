@@ -6,6 +6,7 @@ import useAllowList from './useAllowList'
 import useTabInfo from './useTabInfo'
 import Switch from './Switch'
 import AllowList from './AllowList'
+import Jar from './Jar'
 
 const Header = styled.div`
     text-align: center;
@@ -35,6 +36,9 @@ const Cointainer = styled.div`
 
 const ContainerMiddle = styled.div`
     flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
 const ContainerBottom = styled.div`
@@ -86,6 +90,11 @@ const ManageButton = styled(Button)`
     margin: 0 25px;
 `
 
+const CenterText = styled.div`
+    text-align: center;
+    width: 100%;
+`
+
 const App: FC = () => {
     const [manageOpen, setManageOpen] = useState(false)
 
@@ -107,17 +116,22 @@ const App: FC = () => {
             <Cointainer>
                 {/* <AllowList list={allowList} onRemove={unallowDomain} /> */}
                 <ContainerMiddle>
-                    kek
+                    {enabled && <Jar count={trackerCount} />}
                 </ContainerMiddle>
                 <ContainerBottom>
-                    <ContainerBottomLeft>
-                        <Counter>{trackerCount}</Counter>
-                        <CounterText>trackers {enabled ? 'were' : 'are'} following you</CounterText>
-                    </ContainerBottomLeft>
-                    <ContainerBottomRight>
-                        <div>Protection</div>
-                        <Switch active={enabled} onClick={enabled ? () => allowDomain(hostname) : () => unallowDomain(hostname)} />
-                    </ContainerBottomRight>
+                    {hostname ?
+                        <>
+                            <ContainerBottomLeft>
+                                <Counter>{trackerCount}</Counter>
+                                <CounterText>trackers {enabled ? 'were' : 'are'} following you</CounterText>
+                            </ContainerBottomLeft>
+                            <ContainerBottomRight>
+                                <div>Protection</div>
+                                <Switch active={enabled} onClick={enabled ? () => allowDomain(hostname) : () => unallowDomain(hostname)} />
+                            </ContainerBottomRight>
+                        </>
+                        : <CenterText>This doesn't look like a website</CenterText>
+                    }
                 </ContainerBottom>
             </Cointainer>
             <ManageButton onClick={() => setManageOpen(open => !open)}>{buttonText}</ManageButton>
