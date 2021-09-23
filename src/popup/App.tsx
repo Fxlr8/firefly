@@ -189,7 +189,7 @@ const App: FC = () => {
                     </Container>
                 }
                 <ManageButton onClick={() => setManageOpen(open => !open)}>{buttonText}</ManageButton>
-                <PoweredBy href={'https://github.com/duckduckgo/tracker-radar'}>Powered by DuckDuckGo tracker radar</PoweredBy>
+                <PoweredBy target='_blank' href={'https://github.com/duckduckgo/tracker-radar'}>Powered by DuckDuckGo tracker radar</PoweredBy>
             </Wrapper>
         </>
     )
