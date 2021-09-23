@@ -6,7 +6,7 @@
 		"gen-list:generate": "tsc -p scripts/tsconfig.json && node --experimental-modules tmp/generateBlocklist.js",
 		"gen-list:watch": "tsc-watch -p scripts/tsconfig.json",
 		"gen-list": "npm run gen-list:load && npm run gen-list:generate",
-		"build": "webpack --mode=production",
+		"build": "npm run gen-list && webpack --mode=production",
 		"watch": "webpack --mode=development --watch",
 		"version": "dot-json distribution/manifest.json version $VER",
 		"release:cws": "webstore upload --source=distribution --auto-publish",
