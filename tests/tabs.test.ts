@@ -10,8 +10,12 @@ jest.mock('webextension-polyfill', () => ({
         onBeforeRequest: {
             addListener: () => { }
         }
+    },
+    runtime: {
+        sendMessage: async () => { }
     }
 }))
+
 describe('updateOrCreateTab', () => {
 
     it('creates tab for TLD', () => {
