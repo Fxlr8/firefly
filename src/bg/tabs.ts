@@ -1,10 +1,6 @@
 import { parse } from 'tldts'
+import sendAction from '../utils/sendAction'
 import browser from 'webextension-polyfill'
-
-interface Site {
-    hostname: string | null,
-    trackers: Set<string>
-}
 
 const tabs = new Map<number, Site>()
 
@@ -29,6 +25,9 @@ const updateOrCreateTab = (tabId: number, options: TabUpdateOptions) => {
         tab.hostname = hostname
         tab.trackers = new Set()
     }
+
+    // notify popup state when site trackers count changes
+    sendTrackerCountUpdateAction(tabId, tab)
 }
 
 const handleNewFrame = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType) => {
@@ -60,8 +59,20 @@ const init = async () => {
         updateOrCreateTab(tab.id, { url: tab.url })
     })
 }
-
 init()
 
+const sendTrackerCountUpdateAction = (tabId: number, tab?: Site) => {
+    if (!tab) {
+        tab = tabs.get(tabId)
+    }
+    if (tab) {
+        sendAction({
+            type: 'trackerCountUpdate',
+            tabId,
+            value: tab.trackers.size
+        } as TrackerCountUpdateAction)
+    }
+}
+
 export default tabs
-export { updateOrCreateTab }
+export { updateOrCreateTab, sendTrackerCountUpdateAction }
