@@ -179,7 +179,7 @@ const App: FC = () => {
                                         <CounterText>trackers {!enabled ? 'are' : 'were'} following you</CounterText>
                                     </ContainerBottomLeft>
                                     <ContainerBottomRight>
-                                        <div>Protection</div>
+                                        <div>Site Protection</div>
                                         <Switch active={enabled} onClick={enabled ? () => allowDomain(hostname) : () => unallowDomain(hostname)} />
                                     </ContainerBottomRight>
                                 </>
