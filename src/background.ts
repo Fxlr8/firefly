@@ -1,7 +1,16 @@
 import browser from 'webextension-polyfill'
 import { parse } from 'tldts'
 
-console.log('HELLO BACKGROUND')
+const allowList: Set<string> = new Set()
+const updateAllowList = async () => {
+    const { allowList: storageAllowList } = await browser.storage.local.get('allowList')
+
+    allowList.clear()
+
+    if (storageAllowList && storageAllowList.length) {
+        storageAllowList.forEach((host: string) => allowList.add(host))
+    }
+}
 
 const logURL = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType): void => {
     // const requestData = {
