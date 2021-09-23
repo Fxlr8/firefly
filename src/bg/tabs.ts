@@ -2,7 +2,7 @@ import { parse } from 'tldts'
 import browser from 'webextension-polyfill'
 
 interface Site {
-    hostname?: string,
+    hostname: string | null,
     trackers: Set<string>
 }
 
@@ -14,7 +14,8 @@ interface TabUpdateOptions {
 
 const updateOrCreateTab = (tabId: number, options: TabUpdateOptions) => {
     const urlData = parse(options.url || '')
-    const hostname = urlData.hostname!
+    const domain = urlData.domain
+    const hostname = domain ? urlData.hostname : null
 
     let tab = tabs.get(tabId)
 
@@ -28,11 +29,10 @@ const updateOrCreateTab = (tabId: number, options: TabUpdateOptions) => {
         tab.hostname = hostname
         tab.trackers = new Set()
     }
-
-    console.log(tabs)
 }
 
 const handleNewFrame = (requestDetails: browser.WebRequest.OnBeforeRequestDetailsType) => {
+    console.log(`tab handler for r:${requestDetails.requestId}`)
     console.log('frame', requestDetails)
     const { tabId, url } = requestDetails
 
@@ -64,3 +64,4 @@ const init = async () => {
 init()
 
 export default tabs
+export { updateOrCreateTab }
