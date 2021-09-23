@@ -56,7 +56,11 @@ interface AllowListProps {
 const AllowList: FC<AllowListProps> = ({ list, onRemove }) => {
     return (
         <AllowListWrapper>
-            <Title>Unprotected websites:</Title>
+            {list.length ?
+                <Title>Unprotected websites:</Title>
+                :
+                <Title>All sites are currently protected</Title>
+            }
             {list.map((host) => (
                 <AllowListEntry key={host}>
                     <Host>{host}</Host>
