@@ -20,7 +20,7 @@ const SwitchBody = styled.div<{ active: boolean }>`
     background-color:${props => props.active ? '#E3715144' : '#FFFFFF44'};
     position: relative;
     cursor: pointer;
-    margin: 15px 0;
+    margin: 15px 0 15px 15px;
     transition: background-color 200ms ease;
 `
 
