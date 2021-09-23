@@ -6,6 +6,7 @@ import useAllowList from './useAllowList'
 import useTabInfo from './useTabInfo'
 import Switch from './Switch'
 import AllowList from './AllowList'
+import Eyes from './Eyes'
 import Jar from './Jar'
 
 const Header = styled.div`
@@ -25,9 +26,11 @@ const Wrapper = styled.section`
     flex-direction: column;
     height: 576px;
     justify-content: space-between;
+    position: relative;
+    z-index: 2;
 `
 
-const Cointainer = styled.div`
+const Container = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -39,6 +42,7 @@ const ContainerMiddle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 `
 
 const ContainerBottom = styled.div`
@@ -95,6 +99,39 @@ const CenterText = styled.div`
     width: 100%;
 `
 
+const Darkness = styled.div<{ show: boolean }>`
+    z-index: 1;
+    position: absolute;
+    width: 380px;
+    height: 576px;
+    left: 0px;
+    top: 0px;
+    opacity: ${props => props.show ? 1 : 0};
+    background: radial-gradient(71.63% 71.63% at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.58) 100%);
+    transition: opacity 600ms ease;
+`
+
+const EyesOne = styled(Eyes)`
+    top: 100px;
+    left: 140px;
+    z-index: 0;
+`
+const EyesTwo = styled(Eyes)`
+    top: 270px;
+    left: 45px;
+    z-index: 0;
+`
+const EyesThree = styled(Eyes)`
+    top: 340px;
+    left: 260px;
+    z-index: 0;
+`
+
+const TheySeeYou = styled.div`
+    font-size: 20px;
+    font-weight: medium;
+`
+
 const App: FC = () => {
     const [manageOpen, setManageOpen] = useState(false)
 
@@ -106,37 +143,53 @@ const App: FC = () => {
 
     const enabled = !allowList.includes(hostname!)
 
-    const buttonText = manageOpen ? 'Back' : 'Manage exceptions'
+    const buttonText = manageOpen ? 'Back' : 'Unprotected websites'
 
     return (
-        <Wrapper>
-            <Header>
-                <Brand>firefly</Brand>tracker catcher
-            </Header>
-            <Cointainer>
-                {/* <AllowList list={allowList} onRemove={unallowDomain} /> */}
-                <ContainerMiddle>
-                    {enabled && <Jar count={trackerCount} />}
-                </ContainerMiddle>
-                <ContainerBottom>
-                    {hostname ?
-                        <>
-                            <ContainerBottomLeft>
-                                <Counter>{trackerCount}</Counter>
-                                <CounterText>trackers {enabled ? 'were' : 'are'} following you</CounterText>
-                            </ContainerBottomLeft>
-                            <ContainerBottomRight>
-                                <div>Protection</div>
-                                <Switch active={enabled} onClick={enabled ? () => allowDomain(hostname) : () => unallowDomain(hostname)} />
-                            </ContainerBottomRight>
-                        </>
-                        : <CenterText>This doesn't look like a website</CenterText>
-                    }
-                </ContainerBottom>
-            </Cointainer>
-            <ManageButton onClick={() => setManageOpen(open => !open)}>{buttonText}</ManageButton>
-            <PoweredBy href={'https://github.com/duckduckgo/tracker-radar'}>Powered by DuckDuckGo tracker radar</PoweredBy>
-        </Wrapper>
+        <>
+            <Darkness show={!enabled && !manageOpen} />
+            {!enabled && !manageOpen &&
+                <>
+                    <EyesOne />
+                    <EyesTwo />
+                    <EyesThree />
+                </>
+            }
+            <Wrapper>
+                <Header>
+                    <Brand>firefly</Brand>tracker catcher
+                </Header>
+                {manageOpen ?
+                    <Container>
+                        <AllowList list={allowList} onRemove={unallowDomain} />
+                    </Container>
+                    :
+                    <Container>
+                        <ContainerMiddle>
+                            {enabled && <Jar count={trackerCount} />}
+                            {!enabled && <TheySeeYou>Now they see you...</TheySeeYou>}
+                        </ContainerMiddle>
+                        <ContainerBottom>
+                            {hostname ?
+                                <>
+                                    <ContainerBottomLeft>
+                                        <Counter>{trackerCount}</Counter>
+                                        <CounterText>trackers {enabled ? 'were' : 'are'} following you</CounterText>
+                                    </ContainerBottomLeft>
+                                    <ContainerBottomRight>
+                                        <div>Protection</div>
+                                        <Switch active={enabled} onClick={enabled ? () => allowDomain(hostname) : () => unallowDomain(hostname)} />
+                                    </ContainerBottomRight>
+                                </>
+                                : <CenterText>This doesn't look like a website</CenterText>
+                            }
+                        </ContainerBottom>
+                    </Container>
+                }
+                <ManageButton onClick={() => setManageOpen(open => !open)}>{buttonText}</ManageButton>
+                <PoweredBy href={'https://github.com/duckduckgo/tracker-radar'}>Powered by DuckDuckGo tracker radar</PoweredBy>
+            </Wrapper>
+        </>
     )
 }
 

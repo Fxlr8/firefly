@@ -2,6 +2,9 @@ import React, { FC, memo, ComponentPropsWithoutRef } from 'react'
 import styled from 'styled-components'
 
 const AllowListWrapper = styled.div`
+    margin: 0 25px;
+    max-height: 360px;
+    overflow-y: auto;
 `
 
 const AllowListEntry = styled.div`
@@ -17,7 +20,9 @@ const AllowListEntry = styled.div`
 `
 
 const Host = styled.div`
-
+    max-width: 260px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `
 
 const CrossWrapper = styled.div`
@@ -39,6 +44,10 @@ const Cross: FC<ComponentPropsWithoutRef<'div'>> = (props) => {
     )
 }
 
+const Title = styled.div`
+    text-align: center;
+    margin-bottom: 10px;
+`
 interface AllowListProps {
     list: string[],
     onRemove: (host: string) => void
@@ -47,6 +56,7 @@ interface AllowListProps {
 const AllowList: FC<AllowListProps> = ({ list, onRemove }) => {
     return (
         <AllowListWrapper>
+            <Title>Unprotected websites:</Title>
             {list.map((host) => (
                 <AllowListEntry key={host}>
                     <Host>{host}</Host>
